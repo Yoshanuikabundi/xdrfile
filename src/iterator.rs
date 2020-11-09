@@ -102,4 +102,27 @@ mod tests {
         assert!(frames[37].step == 38);
         Ok(())
     }
+
+    #[test]
+    pub fn test_iterators() -> Result<(), Box<dyn std::error::Error>> {
+        let xtc_traj = XTCTrajectory::open_read("tests/1l2y.xtc")?;
+        let trr_traj = TRRTrajectory::open_read("tests/1l2y.trr")?;
+
+        for (xtc, trr) in xtc_traj.into_iter().zip(trr_traj) {
+            let xtc = xtc?;
+            let xtc = xtc.as_ref();
+            let trr = trr?;
+            let trr = trr.as_ref();
+            assert_eq!(xtc.num_atoms, trr.num_atoms);
+            assert_eq!(xtc.step, trr.step);
+            assert_eq!(xtc.time, trr.time);
+            assert_eq!(xtc.box_vector, trr.box_vector);
+            for (xtc_xyz, trr_xyz) in xtc.coords.iter().zip(&trr.coords) {
+                assert!(xtc_xyz[0] - trr_xyz[0] <= 1e-5);
+                assert!(xtc_xyz[1] - trr_xyz[1] <= 1e-5);
+                assert!(xtc_xyz[2] - trr_xyz[2] <= 1e-5);
+            }
+        }
+        Ok(())
+    }
 }
