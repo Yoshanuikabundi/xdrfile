@@ -1,4 +1,5 @@
 use crate::*;
+use std::io::Seek;
 use std::rc::Rc;
 
 impl IntoIterator for XTCTrajectory {
@@ -69,6 +70,59 @@ where
         match self.trajectory.read(item) {
             Ok(()) => Some(Ok(Rc::clone(&self.item))),
             Err(e) if e.is_eof() => None,
+            Err(e) => {
+                self.has_error = true;
+                Some(Err(e))
+            }
+        }
+    }
+}
+
+struct SeekTrajectoryIterator<'a, T> {
+    prev_position: u64,
+    trajectory: &'a mut T,
+    item: Rc<Frame>,
+    has_error: bool,
+}
+
+impl<'a, T: Trajectory + Seek> SeekTrajectoryIterator<'a, T> {
+    /// Private function to handle reading the next frame in sequence without having to worry about errors
+    fn next_inner(&mut self) -> Result<Rc<Frame>> {
+        let frame: &mut Frame = match Rc::get_mut(&mut self.item) {
+            Some(item) => item,
+            None => {
+                // caller kept frame. Create new one
+                self.item = Rc::new(Frame::with_capacity(self.item.num_atoms));
+                Rc::get_mut(&mut self.item).unwrap()
+            }
+        };
+
+        self.trajectory.read(frame)?;
+
+        Ok(Rc::clone(&self.item))
+    }
+
+    /// Private function to finalise iteration
+    fn finalise(&mut self) -> Option<<Self as Iterator>::Item> {
+        // Seek back to where we were
+        self.trajectory
+            .seek(std::io::SeekFrom::Start(self.prev_position))
+            .expect("Could not seek back to original position");
+        None
+    }
+}
+
+impl<'a, T: Trajectory + Seek> Iterator for SeekTrajectoryIterator<'a, T> {
+    type Item = Result<Rc<Frame>>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.has_error {
+            return self.finalise();
+        }
+
+        match self.next_inner() {
+            Ok(f) => Some(Ok(f)),
+            Err(e) if e.is_eof() => self.finalise(),
             Err(e) => {
                 self.has_error = true;
                 Some(Err(e))

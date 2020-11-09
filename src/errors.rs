@@ -17,6 +17,7 @@ pub enum ErrorTask {
     Flush,
     /// A path was being converted to a CString
     ToCString(Option<std::ffi::NulError>),
+    Iteration,
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -118,6 +119,7 @@ impl std::fmt::Display for Error {
                 f,
                 "Path cannot be converted to a C string because it has a null byte"
             ),
+            Iteration => write!(f, "Seek failed during iteration"),
         }
     }
 }
