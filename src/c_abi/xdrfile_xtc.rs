@@ -1,6 +1,26 @@
 use super::xdrfile::*;
 
 extern "C" {
+    pub fn xtc_header(
+        xd: *mut XDRFILE,
+        natoms: *mut ::std::os::raw::c_int,
+        step: *mut ::std::os::raw::c_int,
+        time: *mut ::std::os::raw::c_float,
+        b_read: Mybool,
+    ) -> ::std::os::raw::c_int;
+
+    pub fn xtc_coord(
+        xd: *mut XDRFILE,
+        natoms: *mut ::std::os::raw::c_int,
+        step: *mut ::std::os::raw::c_int,
+        box_mat: *mut Matrix,
+        x: *mut Rvec,
+        precision: *mut ::std::os::raw::c_float,
+        b_read: Mybool,
+    ) -> ::std::os::raw::c_int;
+}
+
+extern "C" {
     pub fn read_xtc_natoms(
         fn_: *const ::std::os::raw::c_char,
         natoms: *const ::std::os::raw::c_int,

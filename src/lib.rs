@@ -65,6 +65,7 @@ pub mod c_abi;
 mod errors;
 mod frame;
 mod iterator;
+pub mod xtc;
 pub use errors::*;
 pub use frame::Frame;
 pub use iterator::*;
