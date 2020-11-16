@@ -4,24 +4,44 @@ use crate::Frame;
 use std::error::Error as StdError;
 use std::path::{Path, PathBuf};
 
-/// Error type for the xdrfile library
+/// Error type for the xdrfile crate
 #[derive(Debug, Clone, PartialEq)]
 pub enum Error {
     /// An error code from the C API
-    CApiError { code: ErrorCode, task: ErrorTask },
-    /// Passed in a frame of the wrong size
-    WrongSizeFrame { expected: usize, found: usize },
+    CApiError {
+        /// The code returned by the C API
+        code: ErrorCode,
+        /// The high-level task being performed on error
+        task: ErrorTask,
+    },
+    /// Passed a frame of the wrong size to Trajectory::Read()
+    // TODO: do the same for Trajectory::Write()
+    WrongSizeFrame {
+        /// The frame size expected
+        expected: usize,
+        /// The size of the provided frame
+        found: usize,
+    },
     /// C API failed to open a file (No return code provided)
-    CouldNotOpen { path: PathBuf, mode: FileMode },
+    CouldNotOpen {
+        /// The path to the file that could not be opened
+        path: PathBuf,
+        /// The mode the file was to be opened in
+        mode: FileMode,
+    },
     /// A path could not be converted to &OsStr
     InvalidOsStr(Option<std::ffi::NulError>),
     /// Checking the number of atoms failed while reading a frame
     CouldNotCheckNAtoms(Box<Error>),
     /// Error for an out-of-range numeric conversion
     OutOfRange {
+        /// The identity of the value to be converted
         name: &'static str,
+        /// The task being attempted when the conversion failed
         task: ErrorTask,
+        /// The value that could not be converted, as a string
         value: String,
+        /// The target type, as a string
         target: &'static str,
     },
 }
@@ -38,7 +58,7 @@ impl Error {
         }
     }
 
-    /// Get the task being attempted when the C API returned an error, if any
+    /// Get the task being attempted when certain errors occur
     pub fn task(&self) -> Option<ErrorTask> {
         if let Error::CApiError { task, .. } = self {
             Some(*task)
@@ -237,7 +257,7 @@ impl std::fmt::Display for ErrorCode {
     }
 }
 
-/// `Result` type for errors in the `xdrfile` crate
+/// `Result` type for errors in the xdrfile crate
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
 #[cfg(test)]

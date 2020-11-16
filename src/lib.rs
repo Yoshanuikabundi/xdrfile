@@ -56,6 +56,8 @@
 //! }
 //! ```
 
+#![warn(missing_docs)]
+
 #[cfg(test)]
 #[macro_use]
 extern crate assert_approx_eq;
@@ -84,11 +86,14 @@ use std::io::SeekFrom;
 use std::os::raw::{c_float, c_int};
 use std::path::{Path, PathBuf};
 
-/// File Mode for accessing trajectories.
+/// The mode a file is opened in
 #[derive(Debug, Clone, PartialEq)]
 pub enum FileMode {
+    /// Write-only, erasing an existing file
     Write,
+    /// Write-only, appending to an existing file
     Append,
+    /// Read-only
     Read,
 }
 
@@ -232,7 +237,6 @@ pub trait Trajectory {
 
     /// Get the number of atoms from the give trajectory
     fn get_num_atoms(&mut self) -> Result<usize>;
-
 }
 
 /// Handle to Read/Write XTC Trajectories
@@ -243,6 +247,7 @@ pub struct XTCTrajectory {
 }
 
 impl XTCTrajectory {
+    /// Open an XTC file
     pub fn open(path: impl AsRef<Path>, filemode: FileMode) -> Result<XTCTrajectory> {
         let xdr = XDRFile::open(path, filemode)?;
         Ok(XTCTrajectory {
@@ -252,17 +257,17 @@ impl XTCTrajectory {
         })
     }
 
-    /// Open a file in read mode
+    /// Open an XTC file in read mode
     pub fn open_read(path: impl AsRef<Path>) -> Result<Self> {
         Self::open(path, FileMode::Read)
     }
 
-    /// Open a file in append mode
+    /// Open an XTC file in append mode
     pub fn open_append(path: impl AsRef<Path>) -> Result<Self> {
         Self::open(path, FileMode::Append)
     }
 
-    /// Open a file in write mode
+    /// Open an XTC file in write mode
     pub fn open_write(path: impl AsRef<Path>) -> Result<Self> {
         Self::open(path, FileMode::Write)
     }
@@ -370,6 +375,7 @@ pub struct TRRTrajectory {
 }
 
 impl TRRTrajectory {
+    /// Open a TRR file in the given mode
     pub fn open(path: impl AsRef<Path>, filemode: FileMode) -> Result<TRRTrajectory> {
         let xdr = XDRFile::open(path, filemode)?;
         Ok(TRRTrajectory {
@@ -378,17 +384,17 @@ impl TRRTrajectory {
         })
     }
 
-    /// Open a file in read mode
+    /// Open a TRR file in read mode
     pub fn open_read(path: impl AsRef<Path>) -> Result<Self> {
         Self::open(path, FileMode::Read)
     }
 
-    /// Open a file in append mode
+    /// Open a TRR file in append mode
     pub fn open_append(path: impl AsRef<Path>) -> Result<Self> {
         Self::open(path, FileMode::Append)
     }
 
-    /// Open a file in write mode
+    /// Open a TRR file in write mode
     pub fn open_write(path: impl AsRef<Path>) -> Result<Self> {
         Self::open(path, FileMode::Write)
     }

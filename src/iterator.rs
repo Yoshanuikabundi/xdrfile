@@ -32,10 +32,42 @@ impl IntoIterator for TRRTrajectory {
     }
 }
 
-/// Iterator for trajectories.
-/// This iterator yields a Result<Frame, Error> for each frame in the
-/// trajectory file and stops with yielding None once the trajectory is
-/// EOF. Also yields None after the first occurrence of an error
+/// Iterator for trajectories
+///
+/// This iterator yields a Result<Rc<Frame>, Error> for each frame in the trajectory
+/// file and stops at the end of the trajectory or on an error. To avoid additional
+/// allocations, the Frame is reused as long as the caller doesn't retain ownership
+/// of it.
+///
+/// # Examples
+///
+/// Get the position of an atom throughout the trajectory with only one allocation:
+/// ```
+/// use xdrfile::XTCTrajectory;
+/// # fn main() -> xdrfile::Result<()> {
+/// let traj = XTCTrajectory::open_read("tests/1l2y.xtc")?;
+/// let atom_4: Vec<[f32; 3]> = traj
+///     .into_iter()
+///     .map(|res| res.map(|frame| {
+///         frame.coords[4]
+///     }))
+///     .collect::<Result<_, _>>()?;
+/// # Ok(())
+/// # }
+/// ```
+///
+/// Read the entire trajectory into memory:
+/// ```
+/// use xdrfile::{XTCTrajectory, Frame};
+/// use std::rc::Rc;
+/// # fn main() -> xdrfile::Result<()> {
+/// let traj = XTCTrajectory::open_read("tests/1l2y.xtc")?;
+/// let in_mem: Vec<Rc<Frame>> = traj
+///     .into_iter()
+///     .collect::<Result<_, _>>()?;
+/// # Ok(())
+/// # }
+/// ```
 pub struct TrajectoryIterator<T> {
     trajectory: T,
     item: Rc<Frame>,

@@ -1,5 +1,5 @@
-//! # Low level bindings to the c library from GROMACS
-#![allow(non_upper_case_globals, non_camel_case_types)]
+//! Unsafe, low-level bindings to the C FFI
+#![allow(non_upper_case_globals, non_camel_case_types, missing_docs)]
 
 pub mod xdr_seek;
 pub mod xdrfile;
