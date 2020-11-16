@@ -1,4 +1,3 @@
-//! # xdrfile
 //! Read and write xdr trajectory files in .xtc and .trr file format
 //!
 //! This crate is mainly intended to be a wrapper around the GROMACS libxdrfile
@@ -34,10 +33,10 @@
 //! ```
 //!
 //! # Frame iteration
-//! For convenience, the trajectory implementations provide "into_iter" to
-//! be turned into an iterator that yields Rc<Frame>. If a frame is not kept
-//! during iteration, the Iterator reuses it for better performance (and hence,
-//! Rc is required)
+//! For convenience, the trajectory types implement the `IntoIter` trait to
+//! be turned into an iterator that yields `Rc<Frame>`. If a frame is not kept
+//! during iteration, the iterator reuses it for better performance (and hence,
+//! `Rc` is required)
 //!
 //! ```rust
 //! use xdrfile::*;

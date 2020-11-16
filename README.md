@@ -1,14 +1,17 @@
-[![Build Status](https://travis-ci.org/danijoo/xdrfile.svg?branch=master)](https://travis-ci.org/danijoo/xdrfile) [![crates.io](https://img.shields.io/badge/crates.io-orange.svg?longCache=true)](https://www.crates.io/crates/xdrfile) [![Latest Documentation](https://docs.rs/xdrfile/badge.svg)](https://docs.rs/xdrfile)
-
 # xdrfile
+
+[![Build Status](https://travis-ci.org/danijoo/xdrfile.svg?branch=master)](https://travis-ci.org/danijoo/xdrfile)
+![Maintenance](https://img.shields.io/badge/maintenance-activly--developed-brightgreen.svg)
+[![crates.io](https://img.shields.io/badge/crates.io-orange.svg?longCache=true)](https://www.crates.io/crates/xdrfile)
+[![Documentation](https://docs.rs/xdrfile/badge.svg)](https://docs.rs/xdrfile)
+
 Read and write xdr trajectory files in .xtc and .trr file format
 
 This crate is mainly intended to be a wrapper around the GROMACS libxdrfile
 XTC library and provides basic functionality to read and write xtc and trr
 files with a safe api.
 
-## Examples
-### Basic usage
+## Basic usage example
 ```rust
 use xdrfile::*;
 
@@ -36,11 +39,11 @@ fn main() -> Result<()> {
 }
 ```
 
-### Frame iteration
-For convenience, the trajectory implementations provide "into_iter" to
-be turned into an iterator that yields Rc<Frame>. If a frame is not kept
-during iteration, the Iterator reuses it for better performance (and hence,
-Rc is required)
+## Frame iteration
+For convenience, the trajectory types implement the `IntoIter` trait to
+be turned into an iterator that yields `Rc<Frame>`. If a frame is not kept
+during iteration, the iterator reuses it for better performance (and hence,
+`Rc` is required)
 
 ```rust
 use xdrfile::*;
@@ -60,9 +63,7 @@ fn main() -> Result<()> {
 ```
 
 ## xdrfile
-Uses the lowlevel xdrfile c library version 1.1.4 with some minor fixes and additions copied from [mdtraj](https://github.com/mdtraj/mdtraj).
-
-
+Uses the low-level libxdrfile C library from [mdtraj](https://github.com/mdtraj/mdtraj), which has some minor fixes and additions on top of version 1.1.4.
 
 ## License
-Licensed under LGPL because this is what the underlying c library (xdrfile) uses
+Licensed under LGPL because this is what the underlying C library (libxdrfile) uses.
