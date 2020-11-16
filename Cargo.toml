@@ -5,11 +5,15 @@ authors = ["Daniel Bauer <bauer@cbs.tu-darmstadt.de>"]
 license = "LGPL-3.0-only"
 edition = "2018"
 repository = "https://github.com/danijoo/xdrfile"
-description = "Wrapper around the gromacs libxdrfile library. Can be used to read and write gromacs trajectories in xtc and trr format."
 readme = "README.md"
-categories = ["external-ffi-bindings", "encoding", "science"]
-keywords = ["bioinformatics", "molecular-dynamics", "GROMACS", "trajectory"]
+keywords = ["bioinformatics", "molecular-dynamics", "GROMACS", "trajectory", "xtc"]
+description = "Wrapper around the GROMACS libxdrfile library. Can be used to read and write GROMACS trajectories in xtc and trr format."
+categories = ["api-bindings", "external-ffi-bindings", "science", "encoding"]
 build = "build.rs"
+
+[badges]
+travis-ci = { repository = "danijoo/xdrfile", branch = "master" }
+maintenance = { status = "actively-developed" }
 
 [dependencies]
 lazy-init = "0.3"
@@ -23,6 +27,7 @@ criterion = "0.3"
 cc = { version = "1.0", features = ["parallel" ]}
 
 [lib]
+path = "src/lib.rs"
 bench = false
 
 [[bench]]
