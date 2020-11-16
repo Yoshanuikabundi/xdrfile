@@ -1,7 +1,6 @@
 # xdrfile
 
 [![Build Status](https://travis-ci.org/danijoo/xdrfile.svg?branch=master)](https://travis-ci.org/danijoo/xdrfile)
-![Maintenance](https://img.shields.io/badge/maintenance-activly--developed-brightgreen.svg)
 [![crates.io](https://img.shields.io/badge/crates.io-orange.svg?longCache=true)](https://www.crates.io/crates/xdrfile)
 [![Documentation](https://docs.rs/xdrfile/badge.svg)](https://docs.rs/xdrfile)
 
