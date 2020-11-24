@@ -119,9 +119,21 @@ mod tests {
         let traj = XTCTrajectory::open_read("tests/1l2y.xtc")?;
         let frames: Result<Vec<Rc<Frame>>> = traj.into_iter().collect();
         let frames = frames?;
-        assert!(frames.len() == 38);
-        assert!(frames[0].step == 1, frames[0].step);
-        assert!(frames[37].step == 38);
+        assert_eq!(frames.len(), 38);
+        assert_eq!(frames[0].step, 1);
+        assert_eq!(frames[37].step, 38);
+        Ok(())
+    }
+
+    #[test]
+    pub fn test_mut_xtc_trajectory_iterator() -> Result<()> {
+        let mut traj = XTCTrajectory::open_read("tests/1l2y.xtc")?;
+        let frames: Result<Vec<Rc<Frame>>> = traj.iter_mut().collect();
+        let frames = frames?;
+        assert_eq!(frames.len(), 38);
+        assert_eq!(frames[0].step, 1);
+        assert_eq!(frames[37].step, 38);
+        assert_eq!(traj.tell(), 62496);
         Ok(())
     }
 
@@ -130,9 +142,21 @@ mod tests {
         let traj = TRRTrajectory::open_read("tests/1l2y.trr")?;
         let frames: Result<Vec<Rc<Frame>>> = traj.into_iter().collect();
         let frames = frames?;
-        assert!(frames.len() == 38);
-        assert!(frames[0].step == 1, frames[0].step);
-        assert!(frames[37].step == 38);
+        assert_eq!(frames.len(), 38);
+        assert_eq!(frames[0].step, 1);
+        assert_eq!(frames[37].step, 38);
+        Ok(())
+    }
+
+    #[test]
+    pub fn test_mut_trr_trajectory_iterator() -> Result<()> {
+        let mut traj = TRRTrajectory::open_read("tests/1l2y.trr")?;
+        let frames: Result<Vec<Rc<Frame>>> = traj.iter_mut().collect();
+        let frames = frames?;
+        assert_eq!(frames.len(), 38);
+        assert_eq!(frames[0].step, 1);
+        assert_eq!(frames[37].step, 38);
+        assert_eq!(traj.tell(), 143184);
         Ok(())
     }
 }
