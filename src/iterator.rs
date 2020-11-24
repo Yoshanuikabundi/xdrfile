@@ -1,7 +1,10 @@
 use crate::*;
 use std::rc::Rc;
 
-fn into_iter_inner<T: Trajectory>(mut traj: T) -> TrajectoryIterator<T> {
+fn into_iter_inner<T>(mut traj: T) -> TrajectoryIterator<T>
+where
+    T: Trajectory,
+{
     let num_atoms = traj.get_num_atoms();
     let frame = match &num_atoms {
         Ok(num_atoms) => Frame::with_len(*num_atoms),
@@ -26,6 +29,24 @@ impl IntoIterator for XTCTrajectory {
 impl IntoIterator for TRRTrajectory {
     type Item = Result<Rc<Frame>>;
     type IntoIter = TrajectoryIterator<TRRTrajectory>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        into_iter_inner(self)
+    }
+}
+
+impl<'t> IntoIterator for &'t mut XTCTrajectory {
+    type Item = Result<Rc<Frame>>;
+    type IntoIter = TrajectoryIterator<&'t mut XTCTrajectory>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        into_iter_inner(self)
+    }
+}
+
+impl<'t> IntoIterator for &'t mut TRRTrajectory {
+    type Item = Result<Rc<Frame>>;
+    type IntoIter = TrajectoryIterator<&'t mut TRRTrajectory>;
 
     fn into_iter(self) -> Self::IntoIter {
         into_iter_inner(self)

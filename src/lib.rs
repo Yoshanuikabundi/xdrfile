@@ -232,7 +232,24 @@ pub trait Trajectory {
 
     /// Get the number of atoms from the give trajectory
     fn get_num_atoms(&mut self) -> Result<usize>;
+}
 
+impl<'t, T: Trajectory> Trajectory for &'t mut T {
+    fn read(&mut self, frame: &mut Frame) -> Result<()> {
+        <T as Trajectory>::read(self, frame)
+    }
+
+    fn write(&mut self, frame: &Frame) -> Result<()> {
+        <T as Trajectory>::write(self, frame)
+    }
+
+    fn flush(&mut self) -> Result<()> {
+        <T as Trajectory>::flush(self)
+    }
+
+    fn get_num_atoms(&mut self) -> Result<usize> {
+        <T as Trajectory>::get_num_atoms(self)
+    }
 }
 
 /// Handle to Read/Write XTC Trajectories
@@ -265,6 +282,10 @@ impl XTCTrajectory {
     /// Open a file in write mode
     pub fn open_write(path: impl AsRef<Path>) -> Result<Self> {
         Self::open(path, FileMode::Write)
+    }
+
+    pub fn iter_mut(&mut self) -> TrajectoryIterator<&mut Self> {
+        self.into_iter()
     }
 }
 
@@ -391,6 +412,10 @@ impl TRRTrajectory {
     /// Open a file in write mode
     pub fn open_write(path: impl AsRef<Path>) -> Result<Self> {
         Self::open(path, FileMode::Write)
+    }
+
+    pub fn iter_mut(&mut self) -> TrajectoryIterator<&mut Self> {
+        self.into_iter()
     }
 }
 
